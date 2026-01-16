@@ -1,1 +1,85 @@
+<!DOCTYPE html>
+<html lang="nl">
+.shop {
+background: #ff9800;
+color: #fff;
+}
 
+
+.avatar {
+background: rgba(255, 255, 255, 0.2);
+border-radius: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px;
+gap: 16px;
+}
+
+
+.avatar-circle {
+width: 120px;
+height: 120px;
+border-radius: 50%;
+background: #ddd;
+color: #555;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+}
+</style>
+</head>
+<body>
+<!-- Splash screen -->
+<div id="splash" class="screen">
+<div class="logo">GS</div>
+<div class="title">GeoSnap</div>
+</div>
+
+
+<!-- Start menu -->
+<div id="menu" class="screen">
+<div class="menu-container">
+<div class="user-info">
+<h2>Jouw user</h2>
+<div class="stat">Aantal keer gespeeld: <strong>12</strong></div>
+<div class="stat">Aantal keer gewonnen: <strong>5</strong></div>
+<div class="stat">Munten: <strong>320</strong></div>
+
+
+<div class="buttons">
+<button class="play">Speel mee</button>
+<button class="shop">Winkel</button>
+</div>
+</div>
+
+
+<div class="avatar">
+<div class="avatar-circle">Default</div>
+<div>Poppetje</div>
+</div>
+</div>
+</div>
+
+
+<script>
+// Simpele overgang van splash naar menu
+setTimeout(() => {
+const splash = document.getElementById('splash');
+const menu = document.getElementById('menu');
+
+
+splash.style.opacity = '0';
+
+
+setTimeout(() => {
+splash.style.display = 'none';
+menu.style.opacity = '1';
+menu.style.pointerEvents = 'auto';
+}, 1000);
+}, 2500);
+</script>
+</body>
+</html>
