@@ -2,217 +2,149 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<title>GeoSnap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geosnap</title>
+
+<!-- QR scanner library -->
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 body {
-    background:#e6e6e6;
-    font-family:Arial, sans-serif;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #dff5df;
+    text-align: center;
 }
-.phone {
-    width:360px;
-    height:640px;
-    background:white;
-    margin:40px auto;
-    border-radius:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
-    padding:20px;
+
+.screen {
+    display: none;
+    padding: 20px;
 }
-.screen { display:none; text-align:center; }
-.screen.active { display:block; }
-input {
-    width:90%;
-    padding:10px;
-    margin:15px 0;
-    border-radius:8px;
-    border:1px solid #ccc;
+
+.active {
+    display: block;
 }
+
 button {
-    width:100%;
-    padding:12px;
-    margin:8px 0;
-    border:none;
-    border-radius:10px;
-    background:#4CAF50;
-    color:white;
-    font-size:16px;
+    padding: 15px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin: 10px;
 }
-button.secondary {
-    background:#ccc;
-    color:black;
+
+button:hover {
+    background-color: #45a049;
 }
-.balance {
-    background:#f2f2f2;
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:10px;
-    font-weight:bold;
+
+.logo {
+    width: 200px;
+    margin: 20px auto;
 }
-.inventory {
-    font-size:14px;
-    text-align:left;
-    margin:10px;
+
+.menu-item {
+    font-size: 18px;
+    margin: 8px;
 }
-.error { color:red; }
-#reader { width:100%; }
+
+.back {
+    font-size: 22px;
+    cursor: pointer;
+    text-align: left;
+}
+
+a {
+    color: #006600;
+    font-size: 18px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="phone">
-
-<!-- Splash -->
-<div id="splash" class="screen active">
-    <h1>GeoSnap</h1>
-    <p>Laden...</p>
+<!-- START SCREEN -->
+<div id="start" class="screen active">
+    <img src="logo.png" class="logo">
+    <div style="margin-top:2cm;">
+        <button onclick="goTo('home')">Continue</button>
+    </div>
 </div>
 
-<!-- Login -->
-<div id="login" class="screen">
-    <h2>Log in</h2>
-    <input id="username" placeholder="Gebruikersnaam">
-    <p id="loginError" class="error"></p>
-    <button onclick="login()">Log in</button>
-</div>
-
-<!-- Home -->
+<!-- HOME SCREEN -->
 <div id="home" class="screen">
-    <h2>Home</h2>
-    <div class="balance">💰 Munten: <span id="coins">0</span></div>
-    <div class="inventory" id="inventory"></div>
-    <button onclick="goTo('shop')">🛒 Shop</button>
-    <button onclick="openQR()">📷 QR scannen</button>
+    <h1>Geosnap</h1>
+    <img src="logo.png" class="logo">
+    <p><b>“win en maak kans op een zelfgekozen prijs!”</b></p>
+
+    <button onclick="goTo('menu')">Menu</button>
+    <button onclick="goTo('play')">Speel mee!</button>
 </div>
 
-<!-- Shop -->
-<div id="shop" class="screen">
-    <h2>Shop</h2>
-    <p id="shopMessage"></p>
+<!-- MENU SCREEN -->
+<div id="menu" class="screen">
+    <div class="back" onclick="goTo('home')">⬅ Terug</div>
+    <h2>Menu</h2>
 
-    <button onclick="buyItem('Ijsje',540)">🍦 Ijsje – 540</button>
-    <button onclick="buyItem('Frietjes',1000)">🍟 Frietjes – 1000</button>
-    <button onclick="buyItem('Lolly',150)">🍭 Lolly – 150</button>
-    <button onclick="buyItem('Twix',250)">🍫 Twix – 250</button>
-
-    <button class="secondary" onclick="goTo('home')">Terug</button>
+    <div class="menu-item">🍦 Ijsje – 540 punten</div>
+    <div class="menu-item">🍬 Snoep – 250 punten</div>
+    <div class="menu-item">🍫 Twix – 250 punten</div>
+    <div class="menu-item">🥤 Dranken – 350 punten</div>
+    <div class="menu-item">🍟 Chips – 300 punten</div>
+    <div class="menu-item">🍪 Koekjes – 250 punten</div>
 </div>
 
-<!-- QR -->
-<div id="qr" class="screen">
-    <h2>Scan QR-code</h2>
-    <div id="reader"></div>
-    <button class="secondary" onclick="stopQR()">Stop</button>
+<!-- SPEEL MEE SCREEN -->
+<div id="play" class="screen">
+    <div class="back" onclick="goTo('home')">⬅ Terug</div>
+    <h2>Doe mee!</h2>
+
+    <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">
+        WhatsApp kanaal openen
+    </a>
+
+    <div style="margin-top:4cm;">
+        <button onclick="goTo('scanner')">QR code scannen</button>
+    </div>
 </div>
 
-<!-- Result -->
-<div id="result" class="screen">
-    <h2 id="resultTitle"></h2>
-    <p id="resultText"></p>
-    <button onclick="goTo('home')">Terug naar home</button>
+<!-- QR SCANNER -->
+<div id="scanner" class="screen">
+    <div class="back" onclick="stopScanner(); goTo('play')">⬅ Terug</div>
+    <h2>QR Code Scanner</h2>
+    <div id="reader" style="width:300px;margin:auto;"></div>
+    <p id="result"></p>
 </div>
-
-</div>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-let coins = Number(localStorage.getItem("coins")) || 0;
-let inventory = JSON.parse(localStorage.getItem("inventory")) || {
-    Ijsje:0, Frietjes:0, Lolly:0, Twix:0
-};
-let lastPurchaseDate = localStorage.getItem("lastPurchaseDate") || "";
-let qrScanner;
+let html5QrCode;
 
-// Navigation
-function goTo(id) {
+function goTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    updateUI();
-}
+    document.getElementById(screenId).classList.add('active');
 
-// Splash
-setTimeout(() => goTo('login'), 3000);
-
-// Login
-function login() {
-    if (username.value.trim() === "") {
-        loginError.textContent = "Voer een naam in";
-    } else {
-        loginError.textContent = "";
-        goTo('home');
+    if (screenId === 'scanner') {
+        startScanner();
     }
 }
 
-// Update UI
-function updateUI() {
-    coinsSpan = document.getElementById("coins");
-    if (coinsSpan) coinsSpan.textContent = coins;
-
-    const inv = document.getElementById("inventory");
-    if (inv) {
-        inv.innerHTML =
-            `🍦 Ijsjes: ${inventory.Ijsje}<br>
-             🍟 Frietjes: ${inventory.Frietjes}<br>
-             🍭 Lolly’s: ${inventory.Lolly}<br>
-             🍫 Twix: ${inventory.Twix}`;
-    }
-
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("inventory", JSON.stringify(inventory));
-    localStorage.setItem("lastPurchaseDate", lastPurchaseDate);
-}
-
-// QR
-function openQR() {
-    goTo('qr');
-    qrScanner = new Html5Qrcode("reader");
-    qrScanner.start(
-        { facingMode:"environment" },
-        { fps:10, qrbox:250 },
-        onScanSuccess
+function startScanner() {
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => {
+            document.getElementById("result").innerText =
+                "Gescannde QR-code: " + qrCodeMessage;
+        }
     );
 }
 
-function stopQR() {
-    if (qrScanner) qrScanner.stop();
-    goTo('home');
-}
-
-function onScanSuccess() {
-    qrScanner.stop();
-    const gewonnen = Math.random() > 0.3;
-
-    if (gewonnen) {
-        const winst = Math.floor(Math.random()*300)+100;
-        coins += winst;
-        resultTitle.textContent = "🎉 Gewonnen!";
-        resultText.textContent = "Je kreeg " + winst + " munten!";
-    } else {
-        resultTitle.textContent = "😢 Helaas";
-        resultText.textContent = "Geen munten gewonnen";
-    }
-    goTo('result');
-}
-
-// Shop (max 1 per dag)
-function buyItem(item, price) {
-    const today = new Date().toDateString();
-    const msg = document.getElementById("shopMessage");
-
-    if (lastPurchaseDate === today) {
-        msg.textContent = "❌ Je mag maar 1 aankoop per dag doen";
-        return;
-    }
-
-    if (coins >= price) {
-        coins -= price;
-        inventory[item]++;
-        lastPurchaseDate = today;
-        msg.textContent = "✅ Aankoop gelukt!";
-        updateUI();
-    } else {
-        msg.textContent = "❌ Te weinig munten";
+function stopScanner() {
+    if (html5QrCode) {
+        html5QrCode.stop();
     }
 }
 </script>
