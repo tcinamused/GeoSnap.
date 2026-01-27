@@ -11,6 +11,7 @@
 
   <!-- STARTSCHERM -->
   <div id="startScreen" class="screen active">
+    <h1>Geosnap</h1>
     <img src="logo.png" class="logo" alt="Geosnap Logo">
     <button onclick="showScreen('homeScreen')">Continue</button>
   </div>
@@ -65,6 +66,7 @@
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           qr.stop();
+          // Automatisch openen als het een URL is
           if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
             window.location.href = decodedText;
           } else {
