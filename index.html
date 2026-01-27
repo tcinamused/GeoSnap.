@@ -4,126 +4,154 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geosnap</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body, html {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom, #d0ffd0, #f0fff0);
-      color: #333;
+      font-family: Arial, sans-serif;
+      background-color: #eaffea;
     }
-
     .screen {
       display: none;
       height: 100vh;
-      width: 100%;
       text-align: center;
+      padding-top: 2cm;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
     }
-
     .screen.active {
       display: flex;
     }
-
-    h1 { font-size: 48px; color: #2e7d32; margin-bottom: 20px; }
-    h2 { font-size: 36px; color: #388e3c; margin-bottom: 25px; }
-    p { font-size: 22px; max-width: 90%; color: #1b5e20; margin-bottom: 20px; }
-    img.logo { width: 280px; max-width: 80%; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 20px; }
-
+    img {
+      width: 260px;
+      max-width: 80%;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 34px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 22px;
+      margin: 20px;
+    }
+    .menu-item {
+      font-size: 24px;
+      margin: 12px;
+    }
     button {
       font-size: 22px;
-      padding: 18px 36px;
-      margin: 10px;
+      padding: 16px 32px;
+      margin: 15px;
       border: none;
-      border-radius: 14px;
-      background: #4caf50;
+      border-radius: 12px;
+      background-color: #4CAF50;
       color: white;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-
-    button:hover { background: #45a049; transform: translateY(-2px); }
-
-    a { font-size: 22px; color: #1565c0; text-decoration: underline; }
-    .spacer { height: 4cm; }
-    #qr-reader { width: 300px; max-width: 90%; margin: 20px auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    button:hover {
+      background-color: #45a049;
+    }
+    a {
+      font-size: 22px;
+      color: blue;
+      text-decoration: underline;
+    }
+    .spacer {
+      height: 2cm;
+    }
+    #qr-reader {
+      width: 90%;
+      max-width: 400px;
+      margin: auto;
+    }
   </style>
+  <!-- QR Code Scanner library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-  <!-- START -->
-  <div id="startScreen" class="screen active">
-    <h1>Geosnap</h1>
-    <img src="logo.png" class="logo" alt="Geosnap Logo">
-    <button id="startBtn">Continue</button>
-  </div>
+<!-- START SCHERM -->
+<div id="startScreen" class="screen active">
+  <img src="logo.png" alt="Geosnap Logo">
+  <button onclick="showScreen('homeScreen')">Continue</button>
+</div>
 
-  <!-- HOME -->
-  <div id="homeScreen" class="screen">
-    <h1>Geosnap</h1>
-    <img src="logo.png" class="logo" alt="Geosnap Logo">
-    <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
-    <button id="menuBtn">Menu</button>
-  </div>
+<!-- HOME SCHERM -->
+<div id="homeScreen" class="screen">
+  <h1>Geosnap</h1>
+  <img src="logo.png" alt="Geosnap Logo">
+  <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+  <button onclick="showScreen('menuScreen')">Menu</button>
+</div>
 
-  <!-- MENU / SHOP -->
-  <div id="menuScreen" class="screen">
-    <h2>Wat kan je kopen?</h2>
-    <div>🍦 IJsje – 540 punten</div>
-    <div>🍬 Snoep – 250 punten</div>
-    <div>🍫 Twix – 250 punten</div>
-    <div>🥤 Dranken – 350 punten</div>
-    <div>🍟 Chips – 300 punten</div>
-    <div>🍪 Koekjes – 250 punten</div>
-    <button id="backBtn">⬅ Terug</button>
-    <button id="playBtn">Speel mee!</button>
-  </div>
+<!-- MENU SCHERM -->
+<div id="menuScreen" class="screen">
+  <h2>Wat kan je kopen?</h2>
+  <div class="menu-item">🍦 IJsje – 540 punten</div>
+  <div class="menu-item">🍬 Snoep – 250 punten</div>
+  <div class="menu-item">🍫 Twix – 250 punten</div>
+  <div class="menu-item">🥤 Dranken – 350 punten</div>
+  <div class="menu-item">🍟 Chips – 300 punten</div>
+  <div class="menu-item">🍪 Koekjes – 250 punten</div>
+  <button onclick="showScreen('homeScreen')">⬅ Terug</button>
+  <br>
+  <button onclick="showScreen('playScreen')">Speel mee!</button>
+</div>
 
-  <!-- SPEEL MEE -->
-  <div id="playScreen" class="screen">
-    <h2>Speel mee</h2>
-    <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">WhatsApp kanaal openen</a>
-    <div class="spacer"></div>
-    <button id="qrBtn">QR code scannen</button>
-    <div id="qr-reader"></div>
-  </div>
+<!-- SPEEL MEE SCHERM -->
+<div id="playScreen" class="screen">
+  <h2>Speel mee</h2>
+  <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">WhatsApp kanaal openen</a>
+  <div class="spacer"></div>
+  <button onclick="startQR()">QR code scannen</button>
+  <div id="qr-reader"></div>
+</div>
 
-  <!-- SCRIPT -->
-  <script>
-    // Functie om schermen te wisselen
-    function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
-    }
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(screen => {
+    screen.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
 
-    // Koppelen van knoppen na laden
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById('startBtn').addEventListener('click', function(){ showScreen('homeScreen'); });
-      document.getElementById('menuBtn').addEventListener('click', function(){ showScreen('menuScreen'); });
-      document.getElementById('backBtn').addEventListener('click', function(){ showScreen('homeScreen'); });
-      document.getElementById('playBtn').addEventListener('click', function(){ showScreen('playScreen'); });
+let qrScanner;
 
-      document.getElementById('qrBtn').addEventListener('click', function(){
-        const qr = new Html5Qrcode("qr-reader");
-        qr.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          (decodedText) => {
-            qr.stop();
-            if(decodedText.startsWith("http://") || decodedText.startsWith("https://")){
-              window.location.href = decodedText;
-            } else {
-              alert("QR code gescand: " + decodedText);
-            }
-          },
-          (err) => { console.log(err); }
-        );
+function startQR() {
+  const qrRegion = document.getElementById("qr-reader");
+  qrRegion.innerHTML = ""; // Clear previous scanner
+
+  qrScanner = new Html5Qrcode("qr-reader");
+
+  qrScanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    (decodedText) => {
+      qrScanner.stop().then(() => {
+        if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+          window.location.href = decodedText;
+        } else {
+          alert("QR code gescand:\n" + decodedText);
+        }
+      }).catch(err => {
+        console.error("Stop scanner error:", err);
       });
-    });
-  </script>
+    },
+    (errorMessage) => {
+      // Kan worden gebruikt om foutmeldingen te debuggen
+      console.log("QR scan error:", errorMessage);
+    }
+  ).catch(err => {
+    alert("Kan de camera niet starten: " + err);
+  });
+}
+</script>
 
 </body>
 </html>
+
