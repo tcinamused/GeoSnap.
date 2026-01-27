@@ -24,9 +24,10 @@
     <button onclick="showScreen('menuScreen')">Menu</button>
   </div>
 
-  <!-- MENU SCREEN -->
+  <!-- MENU / SHOP SCREEN -->
   <div id="menuScreen" class="screen">
     <h2>Wat kan je kopen?</h2>
+
     <div class="menu-item">🍦 IJsje – 540 punten</div>
     <div class="menu-item">🍬 Snoep – 250 punten</div>
     <div class="menu-item">🍫 Twix – 250 punten</div>
@@ -66,9 +67,8 @@
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           qr.stop();
-          // Automatisch openen als het een URL is
           if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
-            window.location.href = decodedText;
+            window.location.href = decodedText; // automatisch openen
           } else {
             alert("QR code gescand:\n" + decodedText);
           }
