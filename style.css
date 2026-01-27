@@ -13,12 +13,12 @@ body, html {
   color: #333;
 }
 
+/* ALLE schermen */
 .screen {
   display: none;
   height: 100vh;
   width: 100%;
   text-align: center;
-  padding-top: 2cm;
   transition: all 0.3s ease-in-out;
 }
 
@@ -26,6 +26,24 @@ body, html {
   display: block;
 }
 
+/* STARTSCHERM */
+#startScreen {
+  display: flex;
+  flex-direction: column;      /* elementen onder elkaar */
+  justify-content: center;     /* verticaal centreren */
+  align-items: center;         /* horizontaal centreren */
+  height: 100vh;
+  text-align: center;
+  padding-top: 0;              /* padding niet nodig met flex */
+}
+
+#startScreen h1 {
+  font-size: 48px;
+  color: #2e7d32;
+  margin-bottom: 30px;         /* ruimte tussen titel en logo */
+}
+
+/* LOGO */
 img.logo {
   width: 280px;
   max-width: 80%;
@@ -34,6 +52,7 @@ img.logo {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
+/* TITELS EN TEKST */
 h1 {
   font-size: 48px;
   margin-bottom: 20px;
@@ -53,6 +72,7 @@ p {
   color: #1b5e20;
 }
 
+/* MENU ITEMS */
 .menu-item {
   font-size: 24px;
   margin: 15px;
@@ -67,6 +87,7 @@ p {
   background: #81c784;
 }
 
+/* KNOPPEN */
 button {
   font-size: 22px;
   padding: 18px 36px;
@@ -85,12 +106,14 @@ button:hover {
   transform: translateY(-2px);
 }
 
+/* LINKS */
 a {
   font-size: 22px;
   color: #1565c0;
   text-decoration: underline;
 }
 
+/* QR reader */
 .spacer {
   height: 4cm;
 }
