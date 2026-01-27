@@ -25,7 +25,7 @@
     }
 
     img {
-      width: 260px; /* groter logo */
+      width: 260px;
       margin-bottom: 30px;
     }
 
@@ -80,17 +80,18 @@
     }
   </style>
 
+  <!-- QR Code Scanner library -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-  <!-- Startscherm -->
+  <!-- START SCHERM -->
   <div id="startScreen" class="screen active">
     <img src="logo.png" alt="Geosnap Logo">
     <button onclick="showScreen('homeScreen')">Continue</button>
   </div>
 
-  <!-- Home screen -->
+  <!-- HOME SCHERM -->
   <div id="homeScreen" class="screen">
     <h1>Geosnap</h1>
     <img src="logo.png" alt="Geosnap Logo">
@@ -98,7 +99,7 @@
     <button onclick="showScreen('menuScreen')">Menu</button>
   </div>
 
-  <!-- Menu screen -->
+  <!-- MENU SCHERM -->
   <div id="menuScreen" class="screen">
     <h2>Wat kan je kopen?</h2>
 
@@ -114,7 +115,7 @@
     <button onclick="showScreen('playScreen')">Speel mee!</button>
   </div>
 
-  <!-- Speel mee screen -->
+  <!-- SPEEL MEE SCHERM -->
   <div id="playScreen" class="screen">
     <h2>Speel mee</h2>
 
@@ -128,22 +129,35 @@
     <div id="qr-reader"></div>
   </div>
 
+  <!-- SCRIPT -->
   <script>
     function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
       document.getElementById(id).classList.add('active');
     }
 
     function startQR() {
       document.getElementById("qr-reader").innerHTML = "";
+
       const qr = new Html5Qrcode("qr-reader");
 
       qr.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        (text) => {
-          alert("QR Code gescand: " + text);
+        (decodedText) => {
           qr.stop();
+
+          // Automatisch naar de link gaan
+          if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+            window.location.href = decodedText;
+          } else {
+            alert("QR code gescand:\n" + decodedText);
+          }
+        },
+        (errorMessage) => {
+          console.log(errorMessage);
         }
       );
     }
