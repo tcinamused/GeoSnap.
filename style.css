@@ -16,12 +16,14 @@ body, html {
 .screen {
   display: none;
   height: 100vh;
-  width: 100%;
   text-align: center;
-  padding-top: 2cm;
-  transition: all 0.3s ease-in-out;
-}
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* ruimte tussen titel, afbeelding en knop */
+}
 .screen.active {
   display: block;
 }
