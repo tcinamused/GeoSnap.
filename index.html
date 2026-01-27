@@ -1,48 +1,56 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geosnap</title>
+
   <style>
     body, html {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #eaffea;
+      background-color: #eaffea; /* heel licht groen */
     }
+
     .screen {
       display: none;
       height: 100vh;
       text-align: center;
       padding-top: 2cm;
-      flex-direction: column;
-      align-items: center;
     }
+
     .screen.active {
-      display: flex;
+      display: block;
     }
+
     img {
+      width: 260px; /* groter logo */
       width: 260px;
-      max-width: 80%;
       margin-bottom: 30px;
     }
+
     h1 {
       font-size: 42px;
       margin-bottom: 20px;
     }
+
     h2 {
       font-size: 34px;
       margin-bottom: 20px;
     }
+
     p {
       font-size: 22px;
       margin: 20px;
     }
+
     .menu-item {
       font-size: 24px;
       margin: 12px;
     }
+
     button {
       font-size: 22px;
       padding: 16px 32px;
@@ -53,105 +61,116 @@
       color: white;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #45a049;
     }
+
     a {
       font-size: 22px;
       color: blue;
       text-decoration: underline;
     }
+
     .spacer {
-      height: 2cm;
+      height: 4cm;
     }
+
     #qr-reader {
-      width: 90%;
-      max-width: 400px;
+      width: 300px;
       margin: auto;
     }
   </style>
+
   <!-- QR Code Scanner library -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-<!-- START SCHERM -->
-<div id="startScreen" class="screen active">
-  <img src="logo.png" alt="Geosnap Logo">
-  <button onclick="showScreen('homeScreen')">Continue</button>
-</div>
+  <!-- Startscherm -->
+  <!-- START SCHERM -->
+  <div id="startScreen" class="screen active">
+    <img src="logo.png" alt="Geosnap Logo">
+    <button onclick="showScreen('homeScreen')">Continue</button>
+  </div>
 
-<!-- HOME SCHERM -->
-<div id="homeScreen" class="screen">
-  <h1>Geosnap</h1>
-  <img src="logo.png" alt="Geosnap Logo">
-  <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
-  <button onclick="showScreen('menuScreen')">Menu</button>
-</div>
+  <!-- Home screen -->
+  <!-- HOME SCHERM -->
+  <div id="homeScreen" class="screen">
+    <h1>Geosnap</h1>
+    <img src="logo.png" alt="Geosnap Logo">
+    <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+    <button onclick="showScreen('menuScreen')">Menu</button>
+  </div>
 
-<!-- MENU SCHERM -->
-<div id="menuScreen" class="screen">
-  <h2>Wat kan je kopen?</h2>
-  <div class="menu-item">🍦 IJsje – 540 punten</div>
-  <div class="menu-item">🍬 Snoep – 250 punten</div>
-  <div class="menu-item">🍫 Twix – 250 punten</div>
-  <div class="menu-item">🥤 Dranken – 350 punten</div>
-  <div class="menu-item">🍟 Chips – 300 punten</div>
-  <div class="menu-item">🍪 Koekjes – 250 punten</div>
-  <button onclick="showScreen('homeScreen')">⬅ Terug</button>
-  <br>
-  <button onclick="showScreen('playScreen')">Speel mee!</button>
-</div>
+  <!-- Menu screen -->
+  <!-- MENU SCHERM -->
+  <div id="menuScreen" class="screen">
+    <h2>Wat kan je kopen?</h2>
 
-<!-- SPEEL MEE SCHERM -->
-<div id="playScreen" class="screen">
-  <h2>Speel mee</h2>
-  <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">WhatsApp kanaal openen</a>
-  <div class="spacer"></div>
-  <button onclick="startQR()">QR code scannen</button>
-  <div id="qr-reader"></div>
-</div>
+    <div class="menu-item">🍦 IJsje – 540 punten</div>
+    <div class="menu-item">🍬 Snoep – 250 punten</div>
+    <div class="menu-item">🍫 Twix – 250 punten</div>
+    <div class="menu-item">🥤 Dranken – 350 punten</div>
+    <div class="menu-item">🍟 Chips – 300 punten</div>
+    <div class="menu-item">🍪 Koekjes – 250 punten</div>
 
-<script>
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(screen => {
-    screen.classList.remove('active');
-  });
-  document.getElementById(id).classList.add('active');
-}
+    <button onclick="showScreen('homeScreen')">⬅ Terug</button>
+    <br>
+    <button onclick="showScreen('playScreen')">Speel mee!</button>
+  </div>
 
-let qrScanner;
+  <!-- Speel mee screen -->
+  <!-- SPEEL MEE SCHERM -->
+  <div id="playScreen" class="screen">
+    <h2>Speel mee</h2>
 
-function startQR() {
-  const qrRegion = document.getElementById("qr-reader");
-  qrRegion.innerHTML = ""; // Clear previous scanner
+    <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">
+      WhatsApp kanaal openen
+    </a>
 
-  qrScanner = new Html5Qrcode("qr-reader");
+    <div class="spacer"></div>
 
-  qrScanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: { width: 250, height: 250 } },
-    (decodedText) => {
-      qrScanner.stop().then(() => {
-        if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
-          window.location.href = decodedText;
-        } else {
-          alert("QR code gescand:\n" + decodedText);
-        }
-      }).catch(err => {
-        console.error("Stop scanner error:", err);
+    <button onclick="startQR()">QR code scannen</button>
+    <div id="qr-reader"></div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
       });
-    },
-    (errorMessage) => {
-      // Kan worden gebruikt om foutmeldingen te debuggen
-      console.log("QR scan error:", errorMessage);
+      document.getElementById(id).classList.add('active');
     }
-  ).catch(err => {
-    alert("Kan de camera niet starten: " + err);
-  });
-}
-</script>
+
+    function startQR() {
+      document.getElementById("qr-reader").innerHTML = "";
+
+      const qr = new Html5Qrcode("qr-reader");
+
+      qr.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (text) => {
+          alert("QR Code gescand: " + text);
+        (decodedText) => {
+          qr.stop();
+
+          // Automatisch naar de link gaan
+          if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+            window.location.href = decodedText;
+          } else {
+            alert("QR code gescand:\n" + decodedText);
+          }
+        },
+        (errorMessage) => {
+          console.log(errorMessage);
+        }
+      );
+    }
+  </script>
 
 </body>
 </html>
-
