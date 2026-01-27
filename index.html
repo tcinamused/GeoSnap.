@@ -1,154 +1,153 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Geosnap</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geosnap</title>
 
-<!-- QR scanner library -->
-<script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #eaffea; /* heel licht groen */
+    }
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #dff5df;
-    text-align: center;
-}
+    .screen {
+      display: none;
+      height: 100vh;
+      text-align: center;
+      padding-top: 2cm;
+    }
 
-.screen {
-    display: none;
-    padding: 20px;
-}
+    .screen.active {
+      display: block;
+    }
 
-.active {
-    display: block;
-}
+    img {
+      width: 260px; /* groter logo */
+      margin-bottom: 30px;
+    }
 
-button {
-    padding: 15px 25px;
-    font-size: 18px;
-    border: none;
-    border-radius: 10px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    margin: 10px;
-}
+    h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
 
-button:hover {
-    background-color: #45a049;
-}
+    h2 {
+      font-size: 34px;
+      margin-bottom: 20px;
+    }
 
-.logo {
-    width: 200px;
-    margin: 20px auto;
-}
+    p {
+      font-size: 22px;
+      margin: 20px;
+    }
 
-.menu-item {
-    font-size: 18px;
-    margin: 8px;
-}
+    .menu-item {
+      font-size: 24px;
+      margin: 12px;
+    }
 
-.back {
-    font-size: 22px;
-    cursor: pointer;
-    text-align: left;
-}
+    button {
+      font-size: 22px;
+      padding: 16px 32px;
+      margin: 15px;
+      border: none;
+      border-radius: 12px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
 
-a {
-    color: #006600;
-    font-size: 18px;
-}
-</style>
+    button:hover {
+      background-color: #45a049;
+    }
+
+    a {
+      font-size: 22px;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    .spacer {
+      height: 4cm;
+    }
+
+    #qr-reader {
+      width: 300px;
+      margin: auto;
+    }
+  </style>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-
 <body>
 
-<!-- START SCREEN -->
-<div id="start" class="screen active">
-    <img src="logo.png" class="logo">
-    <div style="margin-top:2cm;">
-        <button onclick="goTo('home')">Continue</button>
-    </div>
-</div>
+  <!-- Startscherm -->
+  <div id="startScreen" class="screen active">
+    <img src="logo.png" alt="Geosnap Logo">
+    <button onclick="showScreen('homeScreen')">Continue</button>
+  </div>
 
-<!-- HOME SCREEN -->
-<div id="home" class="screen">
+  <!-- Home screen -->
+  <div id="homeScreen" class="screen">
     <h1>Geosnap</h1>
-    <img src="logo.png" class="logo">
-    <p><b>“win en maak kans op een zelfgekozen prijs!”</b></p>
+    <img src="logo.png" alt="Geosnap Logo">
+    <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+    <button onclick="showScreen('menuScreen')">Menu</button>
+  </div>
 
-    <button onclick="goTo('menu')">Menu</button>
-    <button onclick="goTo('play')">Speel mee!</button>
-</div>
+  <!-- Menu screen -->
+  <div id="menuScreen" class="screen">
+    <h2>Wat kan je kopen?</h2>
 
-<!-- MENU SCREEN -->
-<div id="menu" class="screen">
-    <div class="back" onclick="goTo('home')">⬅ Terug</div>
-    <h2>Menu</h2>
-
-    <div class="menu-item">🍦 Ijsje – 540 punten</div>
+    <div class="menu-item">🍦 IJsje – 540 punten</div>
     <div class="menu-item">🍬 Snoep – 250 punten</div>
     <div class="menu-item">🍫 Twix – 250 punten</div>
     <div class="menu-item">🥤 Dranken – 350 punten</div>
     <div class="menu-item">🍟 Chips – 300 punten</div>
     <div class="menu-item">🍪 Koekjes – 250 punten</div>
-</div>
 
-<!-- SPEEL MEE SCREEN -->
-<div id="play" class="screen">
-    <div class="back" onclick="goTo('home')">⬅ Terug</div>
-    <h2>Doe mee!</h2>
+    <button onclick="showScreen('homeScreen')">⬅ Terug</button>
+    <br>
+    <button onclick="showScreen('playScreen')">Speel mee!</button>
+  </div>
+
+  <!-- Speel mee screen -->
+  <div id="playScreen" class="screen">
+    <h2>Speel mee</h2>
 
     <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">
-        WhatsApp kanaal openen
+      WhatsApp kanaal openen
     </a>
 
-    <div style="margin-top:4cm;">
-        <button onclick="goTo('scanner')">QR code scannen</button>
-    </div>
-</div>
+    <div class="spacer"></div>
 
-<!-- QR SCANNER -->
-<div id="scanner" class="screen">
-    <div class="back" onclick="stopScanner(); goTo('play')">⬅ Terug</div>
-    <h2>QR Code Scanner</h2>
-    <div id="reader" style="width:300px;margin:auto;"></div>
-    <p id="result"></p>
-</div>
+    <button onclick="startQR()">QR code scannen</button>
+    <div id="qr-reader"></div>
+  </div>
 
-<script>
-let html5QrCode;
-
-function goTo(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-
-    if (screenId === 'scanner') {
-        startScanner();
+  <script>
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-}
 
-function startScanner() {
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
+    function startQR() {
+      document.getElementById("qr-reader").innerHTML = "";
+      const qr = new Html5Qrcode("qr-reader");
+
+      qr.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        qrCodeMessage => {
-            document.getElementById("result").innerText =
-                "Gescannde QR-code: " + qrCodeMessage;
+        (text) => {
+          alert("QR Code gescand: " + text);
+          qr.stop();
         }
-    );
-}
-
-function stopScanner() {
-    if (html5QrCode) {
-        html5QrCode.stop();
+      );
     }
-}
-</script>
+  </script>
 
 </body>
 </html>
-
