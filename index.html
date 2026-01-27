@@ -1,113 +1,189 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <title>GeoSnap Login</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #1e3c72;
-      color: white;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .screen {
-      display: none;
-      background: rgba(255,255,255,0.15);
-      padding: 30px;
-      border-radius: 20px;
-      width: 300px;
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 10px;
-      border: none;
-    }
-    button {
-      padding: 10px;
-      width: 100%;
-      border-radius: 12px;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      background: #4caf50;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>GeoSnap</title>
+
+<style>
+body {
+    background:#e6e6e6;
+    font-family:Arial, sans-serif;
+}
+.phone {
+    width:360px;
+    height:640px;
+    background:white;
+    margin:40px auto;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    padding:20px;
+}
+.screen { display:none; text-align:center; }
+.screen.active { display:block; }
+button {
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:10px;
+    background:#4CAF50;
+    color:white;
+    font-size:16px;
+}
+button.secondary {
+    background:#ccc;
+    color:black;
+}
+.balance {
+    background:#f2f2f2;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+.inventory {
+    font-size:14px;
+    text-align:left;
+    margin:10px;
+}
+#reader { width:100%; }
+</style>
 </head>
+
 <body>
 
-<!-- LOGIN / REGISTER -->
-<div id="loginScreen" class="screen">
-  <h2>Account maken</h2>
-  <input id="username" placeholder="Gebruikersnaam">
-  <input id="password" type="password" placeholder="Wachtwoord">
-  <button onclick="saveAccount()">Opslaan</button>
+<div class="phone">
+
+<!-- Splash -->
+<div id="splash" class="screen active">
+    <h1>GeoSnap</h1>
+    <p>Laden...</p>
 </div>
 
-<!-- MAIN MENU -->
-<div id="mainScreen" class="screen">
-  <h2 id="welcome"></h2>
-  <p>Munten: <span id="coins"></span></p>
-  <button onclick="play()">Speel mee</button>
+<!-- Home -->
+<div id="home" class="screen">
+    <h2>Home</h2>
+    <div class="balance">💰 Munten: <span id="coins">0</span></div>
+    <div class="inventory" id="inventory"></div>
+    <button onclick="goTo('shop')">🛒 Shop</button>
+    <button onclick="openQR()">📷 QR scannen</button>
 </div>
+
+<!-- Shop -->
+<div id="shop" class="screen">
+    <h2>Shop</h2>
+    <p id="shopMessage"></p>
+
+    <button onclick="buyItem('Ijsje',540)">🍦 Ijsje – 540 munten</button>
+    <button onclick="buyItem('Frietjes',1000)">🍟 Frietjes – 1000 munten</button>
+    <button onclick="buyItem('Lolly',150)">🍭 Lolly – 150 munten</button>
+    <button onclick="buyItem('Twix',250)">🍫 Twix – 250 munten</button>
+
+    <button class="secondary" onclick="goTo('home')">Terug</button>
+</div>
+
+<!-- QR -->
+<div id="qr" class="screen">
+    <h2>Scan QR-code</h2>
+    <div id="reader"></div>
+    <button class="secondary" onclick="stopQR()">Stop</button>
+</div>
+
+<!-- Result -->
+<div id="result" class="screen">
+    <h2 id="resultTitle"></h2>
+    <p id="resultText"></p>
+    <button onclick="goTo('home')">Terug naar home</button>
+</div>
+
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-  // START DATA
-  let coins = Number(localStorage.getItem("coins")) || 100;
+let coins = Number(localStorage.getItem("coins")) || 0;
+let inventory = JSON.parse(localStorage.getItem("inventory")) || {
+    Ijsje:0, Frietjes:0, Lolly:0, Twix:0
+};
+let lastPurchaseDate = localStorage.getItem("lastPurchaseDate") || "";
+let qrScanner;
 
-  // CHECK ACCOUNT
-  const savedUser = localStorage.getItem("username");
+// Navigation
+function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    updateUI();
+}
 
-  if (savedUser) {
-    showMain();
-  } else {
-    showLogin();
-  }
+// Splash → Home
+setTimeout(() => goTo('home'), 2000);
 
-  function showLogin() {
-    loginScreen.style.display = "block";
-    mainScreen.style.display = "none";
-  }
+// UI update + opslag
+function updateUI() {
+    document.getElementById("coins").textContent = coins;
+    document.getElementById("inventory").innerHTML =
+        `🍦 Ijsjes: ${inventory.Ijsje}<br>
+         🍟 Frietjes: ${inventory.Frietjes}<br>
+         🍭 Lolly’s: ${inventory.Lolly}<br>
+         🍫 Twix: ${inventory.Twix}`;
 
-  function showMain() {
-    loginScreen.style.display = "none";
-    mainScreen.style.display = "block";
-    welcome.textContent = "Welkom " + localStorage.getItem("username");
-    coinsSpan();
-  }
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+    localStorage.setItem("lastPurchaseDate", lastPurchaseDate);
+}
 
-  function saveAccount() {
-    const u = username.value.trim();
-    const p = password.value.trim();
+// QR
+function openQR() {
+    goTo('qr');
+    qrScanner = new Html5Qrcode("reader");
+    qrScanner.start(
+        { facingMode:"environment" },
+        { fps:10, qrbox:250 },
+        onScanSuccess
+    );
+}
 
-    if (!u || !p) {
-      alert("Vul alles in");
-      return;
+function stopQR() {
+    if (qrScanner) qrScanner.stop();
+    goTo('home');
+}
+
+function onScanSuccess() {
+    qrScanner.stop();
+    const gewonnen = Math.random() > 0.3;
+
+    if (gewonnen) {
+        const winst = Math.floor(Math.random()*300)+100;
+        coins += winst;
+        resultTitle.textContent = "🎉 Gewonnen!";
+        resultText.textContent = "Je kreeg " + winst + " munten!";
+    } else {
+        resultTitle.textContent = "😢 Helaas";
+        resultText.textContent = "Geen munten gewonnen";
+    }
+    goTo('result');
+}
+
+// Shop – max 1 aankoop per dag
+function buyItem(item, price) {
+    const today = new Date().toDateString();
+    const msg = document.getElementById("shopMessage");
+
+    if (lastPurchaseDate === today) {
+        msg.textContent = "❌ Maximaal 1 aankoop per dag";
+        return;
     }
 
-    localStorage.setItem("username", u);
-    localStorage.setItem("password", p); // demo
-    showMain();
-  }
-
-  function play() {
-    coins += 20;
-    localStorage.setItem("coins", coins);
-    coinsSpan();
-    alert("Je hebt gespeeld +20 munten!");
-  }
-
-  function coinsSpan() {
-    coinsSpan = document.getElementById("coins");
-    coinsSpan.textContent = coins;
-  }
+    if (coins >= price) {
+        coins -= price;
+        inventory[item]++;
+        lastPurchaseDate = today;
+        msg.textContent = "✅ Aankoop gelukt!";
+        updateUI();
+    } else {
+        msg.textContent = "❌ Te weinig munten";
+    }
+}
 </script>
 
 </body>
