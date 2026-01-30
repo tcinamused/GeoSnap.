@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -6,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geosnap</title>
 
+  <!-- STYLE -->
   <style>
     body, html {
       margin: 0;
@@ -17,6 +17,7 @@
     .screen {
       display: none;
       height: 100vh;
+      width: 100%;
       text-align: center;
       padding-top: 2cm;
     }
@@ -25,25 +26,14 @@
       display: block;
     }
 
-    img {
+    img.logo {
       width: 260px;
       margin-bottom: 30px;
     }
 
-    h1 {
-      font-size: 42px;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      font-size: 34px;
-      margin-bottom: 20px;
-    }
-
-    p {
-      font-size: 22px;
-      margin: 20px;
-    }
+    h1 { font-size: 42px; }
+    h2 { font-size: 34px; }
+    p  { font-size: 22px; margin: 20px; }
 
     .menu-item {
       font-size: 24px;
@@ -71,9 +61,7 @@
       text-decoration: underline;
     }
 
-    .spacer {
-      height: 4cm;
-    }
+    .spacer { height: 4cm; }
 
     #qr-reader {
       width: 300px;
@@ -81,26 +69,26 @@
     }
   </style>
 
-  <!-- QR Code Scanner library -->
+  <!-- QR LIBRARY -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-  <!-- START SCHERM -->
+  <!-- START -->
   <div id="startScreen" class="screen active">
-    <img src="logo.png" alt="Geosnap Logo">
+    <img src="logo.png" alt="Geosnap Logo" class="logo">
     <button onclick="showScreen('homeScreen')">Continue</button>
   </div>
 
-  <!-- HOME SCHERM -->
+  <!-- HOME -->
   <div id="homeScreen" class="screen">
     <h1>Geosnap</h1>
-    <img src="logo.png" alt="Geosnap Logo">
+    <img src="logo.png" alt="Geosnap Logo" class="logo">
     <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
     <button onclick="showScreen('menuScreen')">Menu</button>
   </div>
 
-  <!-- MENU SCHERM -->
+  <!-- MENU -->
   <div id="menuScreen" class="screen">
     <h2>Wat kan je kopen?</h2>
 
@@ -111,12 +99,11 @@
     <div class="menu-item">🍟 Chips – 300 punten</div>
     <div class="menu-item">🍪 Koekjes – 250 punten</div>
 
-    <button onclick="showScreen('homeScreen')">⬅ Terug</button>
-    <br>
+    <button onclick="showScreen('homeScreen')">⬅ Terug</button><br>
     <button onclick="showScreen('playScreen')">Speel mee!</button>
   </div>
 
-  <!-- SPEEL MEE SCHERM -->
+  <!-- SPEEL MEE -->
   <div id="playScreen" class="screen">
     <h2>Speel mee</h2>
 
@@ -130,7 +117,7 @@
     <div id="qr-reader"></div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- SCRIPT (MOET ONDERAAN) -->
   <script>
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(screen => {
@@ -149,15 +136,14 @@
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           qr.stop();
-
-          if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+          if (decodedText.startsWith("http")) {
             window.location.href = decodedText;
           } else {
             alert("QR code gescand:\n" + decodedText);
           }
         },
-        (errorMessage) => {
-          console.log(errorMessage);
+        (error) => {
+          console.log(error);
         }
       );
     }
