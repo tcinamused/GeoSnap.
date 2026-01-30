@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geosnap</title>
 
-  <!-- STYLE -->
   <style>
     body, html {
       margin: 0;
@@ -69,7 +68,7 @@
     }
   </style>
 
-  <!-- QR LIBRARY -->
+  <!-- QR library -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
@@ -117,16 +116,28 @@
     <div id="qr-reader"></div>
   </div>
 
-  <!-- SCRIPT (MOET ONDERAAN) -->
+  <!-- SCRIPT (onderaan is cruciaal voor GitHub Pages) -->
   <script>
+    console.log("✅ JavaScript is geladen");
+
     function showScreen(id) {
+      console.log("➡️ showScreen:", id);
+
       document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
       });
-      document.getElementById(id).classList.add('active');
+
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active');
+      } else {
+        console.error("❌ Screen niet gevonden:", id);
+      }
     }
 
     function startQR() {
+      console.log("📷 QR scanner gestart");
+
       document.getElementById("qr-reader").innerHTML = "";
 
       const qr = new Html5Qrcode("qr-reader");
@@ -136,6 +147,8 @@
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           qr.stop();
+          console.log("✅ QR gescand:", decodedText);
+
           if (decodedText.startsWith("http")) {
             window.location.href = decodedText;
           } else {
@@ -143,7 +156,7 @@
           }
         },
         (error) => {
-          console.log(error);
+          console.log("QR fout:", error);
         }
       );
     }
@@ -151,3 +164,4 @@
 
 </body>
 </html>
+
