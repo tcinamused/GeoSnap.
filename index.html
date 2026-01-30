@@ -11,7 +11,7 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #eaffea; /* heel licht groen */
+      background-color: #eaffea;
     }
 
     .screen {
@@ -26,7 +26,6 @@
     }
 
     img {
-      width: 260px; /* groter logo */
       width: 260px;
       margin-bottom: 30px;
     }
@@ -87,14 +86,12 @@
 </head>
 <body>
 
-  <!-- Startscherm -->
   <!-- START SCHERM -->
   <div id="startScreen" class="screen active">
     <img src="logo.png" alt="Geosnap Logo">
     <button onclick="showScreen('homeScreen')">Continue</button>
   </div>
 
-  <!-- Home screen -->
   <!-- HOME SCHERM -->
   <div id="homeScreen" class="screen">
     <h1>Geosnap</h1>
@@ -103,7 +100,6 @@
     <button onclick="showScreen('menuScreen')">Menu</button>
   </div>
 
-  <!-- Menu screen -->
   <!-- MENU SCHERM -->
   <div id="menuScreen" class="screen">
     <h2>Wat kan je kopen?</h2>
@@ -120,7 +116,6 @@
     <button onclick="showScreen('playScreen')">Speel mee!</button>
   </div>
 
-  <!-- Speel mee screen -->
   <!-- SPEEL MEE SCHERM -->
   <div id="playScreen" class="screen">
     <h2>Speel mee</h2>
@@ -138,7 +133,6 @@
   <!-- SCRIPT -->
   <script>
     function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
       });
@@ -153,12 +147,9 @@
       qr.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        (text) => {
-          alert("QR Code gescand: " + text);
         (decodedText) => {
           qr.stop();
 
-          // Automatisch naar de link gaan
           if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
             window.location.href = decodedText;
           } else {
