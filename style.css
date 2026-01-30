@@ -25,13 +25,16 @@ body, html {
   display: block;
 }
 
-/* STARTSCHERM */
-#startScreen {
+/* ✅ FIX: startscherm behoudt flex */
+#startScreen.active {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+}
+
+/* STARTSCHERM */
+#startScreen {
   padding-top: 0;
 }
 
