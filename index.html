@@ -36,18 +36,27 @@
 
     .menu-item {
       font-size: 24px;
-      margin: 12px;
+      margin: 12px 0;
+    }
+
+    /* Knoppen gestapeld */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
     }
 
     button {
       font-size: 22px;
       padding: 16px 32px;
-      margin: 15px;
       border: none;
       border-radius: 12px;
       background-color: #4CAF50;
       color: white;
       cursor: pointer;
+      min-width: 200px;
     }
 
     button:hover {
@@ -76,7 +85,9 @@
   <!-- START -->
   <div id="startScreen" class="screen active">
     <img src="logo.png" alt="Geosnap Logo" class="logo">
-    <button onclick="showScreen('homeScreen')">Continue</button>
+    <div class="button-container">
+      <button id="start-continue">Continue</button>
+    </div>
   </div>
 
   <!-- HOME -->
@@ -84,7 +95,9 @@
     <h1>Geosnap</h1>
     <img src="logo.png" alt="Geosnap Logo" class="logo">
     <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
-    <button onclick="showScreen('menuScreen')">Menu</button>
+    <div class="button-container">
+      <button id="home-menu">Menu</button>
+    </div>
   </div>
 
   <!-- MENU -->
@@ -98,8 +111,10 @@
     <div class="menu-item">🍟 Chips – 300 punten</div>
     <div class="menu-item">🍪 Koekjes – 250 punten</div>
 
-    <button onclick="showScreen('homeScreen')">⬅ Terug</button><br>
-    <button onclick="showScreen('playScreen')">Speel mee!</button>
+    <div class="button-container">
+      <button id="menu-back">⬅ Terug</button>
+      <button id="menu-play">Speel mee!</button>
+    </div>
   </div>
 
   <!-- SPEEL MEE -->
@@ -112,21 +127,22 @@
 
     <div class="spacer"></div>
 
-    <button onclick="startQR()">QR code scannen</button>
+    <div class="button-container">
+      <button id="play-qr">QR code scannen</button>
+    </div>
     <div id="qr-reader"></div>
   </div>
 
-  <!-- SCRIPT (onderaan is cruciaal voor GitHub Pages) -->
+  <!-- SCRIPT -->
   <script>
     console.log("✅ JavaScript is geladen");
 
+    // Functie om schermen te wisselen
     function showScreen(id) {
       console.log("➡️ showScreen:", id);
-
       document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
       });
-
       const target = document.getElementById(id);
       if (target) {
         target.classList.add('active');
@@ -135,10 +151,11 @@
       }
     }
 
+    // QR code scanner
     function startQR() {
       console.log("📷 QR scanner gestart");
-
-      document.getElementById("qr-reader").innerHTML = "";
+      const qrContainer = document.getElementById("qr-reader");
+      qrContainer.innerHTML = "";
 
       const qr = new Html5Qrcode("qr-reader");
 
@@ -148,7 +165,6 @@
         (decodedText) => {
           qr.stop();
           console.log("✅ QR gescand:", decodedText);
-
           if (decodedText.startsWith("http")) {
             window.location.href = decodedText;
           } else {
@@ -160,6 +176,13 @@
         }
       );
     }
+
+    // Event listeners voor alle knoppen
+    document.getElementById("start-continue").addEventListener("click", () => showScreen("homeScreen"));
+    document.getElementById("home-menu").addEventListener("click", () => showScreen("menuScreen"));
+    document.getElementById("menu-back").addEventListener("click", () => showScreen("homeScreen"));
+    document.getElementById("menu-play").addEventListener("click", () => showScreen("playScreen"));
+    document.getElementById("play-qr").addEventListener("click", startQR);
   </script>
 
 </body>
