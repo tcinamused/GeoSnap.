@@ -39,7 +39,6 @@
       margin: 12px 0;
     }
 
-    /* Knoppen gestapeld */
     .button-container {
       display: flex;
       flex-direction: column;
@@ -56,7 +55,7 @@
       background-color: #4CAF50;
       color: white;
       cursor: pointer;
-      min-width: 200px;
+      min-width: 220px;
     }
 
     button:hover {
@@ -73,7 +72,7 @@
 
     #qr-reader {
       width: 300px;
-      margin: auto;
+      margin: 20px auto;
     }
   </style>
 
@@ -117,7 +116,7 @@
     </div>
   </div>
 
-  <!-- SPEEL MEE -->
+  <!-- SPEEL MEE / QR -->
   <div id="playScreen" class="screen">
     <h2>Speel mee</h2>
 
@@ -129,7 +128,9 @@
 
     <div class="button-container">
       <button id="play-qr">QR code scannen</button>
+      <button id="play-back">⬅ Terug</button>
     </div>
+
     <div id="qr-reader"></div>
   </div>
 
@@ -137,52 +138,56 @@
   <script>
     console.log("✅ JavaScript is geladen");
 
-    // Functie om schermen te wisselen
+    let qr = null;
+
     function showScreen(id) {
-      console.log("➡️ showScreen:", id);
-      document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
+      stopQR();
+
+      document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
       });
+
       const target = document.getElementById(id);
       if (target) {
-        target.classList.add('active');
-      } else {
-        console.error("❌ Screen niet gevonden:", id);
+        target.classList.add("active");
       }
     }
 
-    // QR code scanner
     function startQR() {
-      console.log("📷 QR scanner gestart");
       const qrContainer = document.getElementById("qr-reader");
       qrContainer.innerHTML = "";
 
-      const qr = new Html5Qrcode("qr-reader");
+      qr = new Html5Qrcode("qr-reader");
 
       qr.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
         (decodedText) => {
-          qr.stop();
-          console.log("✅ QR gescand:", decodedText);
+          stopQR();
           if (decodedText.startsWith("http")) {
             window.location.href = decodedText;
           } else {
             alert("QR code gescand:\n" + decodedText);
           }
         },
-        (error) => {
-          console.log("QR fout:", error);
-        }
+        () => {}
       );
     }
 
-    // Event listeners voor alle knoppen
+    function stopQR() {
+      if (qr) {
+        qr.stop().catch(() => {});
+        qr = null;
+      }
+    }
+
+    // Event listeners
     document.getElementById("start-continue").addEventListener("click", () => showScreen("homeScreen"));
     document.getElementById("home-menu").addEventListener("click", () => showScreen("menuScreen"));
     document.getElementById("menu-back").addEventListener("click", () => showScreen("homeScreen"));
     document.getElementById("menu-play").addEventListener("click", () => showScreen("playScreen"));
     document.getElementById("play-qr").addEventListener("click", startQR);
+    document.getElementById("play-back").addEventListener("click", () => showScreen("menuScreen"));
   </script>
 
 </body>
