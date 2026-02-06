@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geosnap</title>
+  <title>Geosnap v3</title>
 
   <style>
     body, html {
@@ -76,117 +76,102 @@
     }
   </style>
 
-  <!-- QR library -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-  <!-- START -->
-  <div id="startScreen" class="screen active">
-    <img src="logo.png" alt="Geosnap Logo" class="logo">
-    <div class="button-container">
-      <button id="start-continue">Continue</button>
-    </div>
+<!-- START -->
+<div id="startScreen" class="screen active">
+  <img src="logo.png" class="logo">
+  <div class="button-container">
+    <button id="btn-start">Continue</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="homeScreen" class="screen">
+  <h1>Geosnap</h1>
+  <img src="logo.png" class="logo">
+  <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+
+  <div class="button-container">
+    <button id="btn-menu">Menu</button>
+    <button id="btn-play">Speel mee!</button>
+  </div>
+</div>
+
+<!-- MENU -->
+<div id="menuScreen" class="screen">
+  <h2>Wat kan je kopen?</h2>
+
+  <div class="menu-item">🍦 IJsje – 540 punten</div>
+  <div class="menu-item">🍬 Snoep – 250 punten</div>
+  <div class="menu-item">🍫 Twix – 250 punten</div>
+  <div class="menu-item">🥤 Dranken – 350 punten</div>
+  <div class="menu-item">🍟 Chips – 300 punten</div>
+  <div class="menu-item">🍪 Koekjes – 250 punten</div>
+
+  <div class="button-container">
+    <button id="btn-menu-back">⬅ Terug</button>
+  </div>
+</div>
+
+<!-- SPEEL MEE -->
+<div id="playScreen" class="screen">
+  <h2>Speel mee</h2>
+
+  <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">
+    WhatsApp kanaal openen
+  </a>
+
+  <div class="spacer"></div>
+
+  <div class="button-container">
+    <button id="btn-scan">QR code scannen</button>
+    <button id="btn-play-back">⬅ Terug</button>
   </div>
 
-  <!-- HOME -->
-  <div id="homeScreen" class="screen">
-    <h1>Geosnap</h1>
-    <img src="logo.png" alt="Geosnap Logo" class="logo">
-    <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+  <div id="qr-reader"></div>
+</div>
 
-    <div class="button-container">
-      <button id="home-menu">Menu</button>
-      <button id="home-play">Speel mee!</button>
-    </div>
-  </div>
+<script>
+  let qr = null;
 
-  <!-- MENU -->
-  <div id="menuScreen" class="screen">
-    <h2>Wat kan je kopen?</h2>
+  function showScreen(id) {
+    stopQR();
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
 
-    <div class="menu-item">🍦 IJsje – 540 punten</div>
-    <div class="menu-item">🍬 Snoep – 250 punten</div>
-    <div class="menu-item">🍫 Twix – 250 punten</div>
-    <div class="menu-item">🥤 Dranken – 350 punten</div>
-    <div class="menu-item">🍟 Chips – 300 punten</div>
-    <div class="menu-item">🍪 Koekjes – 250 punten</div>
+  function startQR() {
+    document.getElementById("qr-reader").innerHTML = "";
+    qr = new Html5Qrcode("qr-reader");
 
-    <div class="button-container">
-      <button id="menu-back">⬅ Terug</button>
-    </div>
-  </div>
-
-  <!-- SPEEL MEE / QR -->
-  <div id="playScreen" class="screen">
-    <h2>Speel mee</h2>
-
-    <a href="https://whatsapp.com/channel/0029Vb73gJ3JuyALJERSdi0W" target="_blank">
-      WhatsApp kanaal openen
-    </a>
-
-    <div class="spacer"></div>
-
-    <div class="button-container">
-      <button id="play-qr">QR code scannen</button>
-      <button id="play-back">⬅ Terug</button>
-    </div>
-
-    <div id="qr-reader"></div>
-  </div>
-
-  <!-- SCRIPT -->
-  <script>
-    console.log("✅ JavaScript is geladen");
-
-    let qr = null;
-
-    function showScreen(id) {
-      stopQR();
-
-      document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-      });
-
-      document.getElementById(id).classList.add("active");
-    }
-
-    function startQR() {
-      const qrContainer = document.getElementById("qr-reader");
-      qrContainer.innerHTML = "";
-
-      qr = new Html5Qrcode("qr-reader");
-
-      qr.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-          stopQR();
-          if (decodedText.startsWith("http")) {
-            window.location.href = decodedText;
-          } else {
-            alert("QR code gescand:\n" + decodedText);
-          }
-        },
-        () => {}
-      );
-    }
-
-    function stopQR() {
-      if (qr) {
-        qr.stop().catch(() => {});
-        qr = null;
+    qr.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      text => {
+        stopQR();
+        alert("QR gescand:\n" + text);
       }
-    }
+    );
+  }
 
-    // Event listeners
-    document.getElementById("start-continue").addEventListener("click", () => showScreen("homeScreen"));
-    document.getElementById("home-menu").addEventListener("click", () => showScreen("menuScreen"));
-    document.getElementById("home-play").addEventListener("click", () => showScreen("playScreen"));
-    document.getElementById("menu-back").addEventListener("click", () => showScreen("homeScreen"));
-    document.getElementById("play-qr").addEventListener("click", startQR);
-    document.getElementById("play-back").addEventListener("click", () => showScreen("homeScreen"));
-  </script>
+  function stopQR() {
+    if (qr) {
+      qr.stop().catch(() => {});
+      qr = null;
+    }
+  }
+
+  // KNOPPEN
+  document.getElementById("btn-start").onclick = () => showScreen("homeScreen");
+  document.getElementById("btn-menu").onclick = () => showScreen("menuScreen");
+  document.getElementById("btn-play").onclick = () => showScreen("playScreen");
+  document.getElementById("btn-menu-back").onclick = () => showScreen("homeScreen");
+  document.getElementById("btn-scan").onclick = startQR;
+  document.getElementById("btn-play-back").onclick = () => showScreen("homeScreen");
+</script>
 
 </body>
 </html>
