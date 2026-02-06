@@ -81,7 +81,6 @@ p {
 
 /* =========================
    MENU / SHOP ITEMS
-   (werkt met bestaande .menu-item)
 ========================= */
 .menu-item {
   background: #ffffff;
@@ -99,7 +98,7 @@ p {
   box-shadow: 0 10px 28px rgba(0,0,0,0.14);
 }
 
-/* Optioneel: titel / prijs als je die gebruikt */
+/* Titel en prijs binnen menu-items */
 .menu-item h3 {
   margin: 0 0 10px;
   font-size: 22px;
@@ -114,7 +113,7 @@ p {
 }
 
 /* =========================
-   KNOPPEN
+   KNOPPEN (lichtgroen)
 ========================= */
 button {
   font-size: 18px;
@@ -122,21 +121,22 @@ button {
   margin: 15px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, #43a047, #2e7d32);
+  background: #a5d6a7; /* lichtgroen */
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 button:hover {
+  background: #81c784; /* iets donkerder groen op hover */
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 
 /* Secondary knop (optioneel) */
 button.secondary {
-  background: #e8f5e9;
+  background: #dcedc8; /* lichtere groene knop */
   color: #2e7d32;
   box-shadow: none;
 }
