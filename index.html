@@ -94,8 +94,10 @@
     <h1>Geosnap</h1>
     <img src="logo.png" alt="Geosnap Logo" class="logo">
     <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
+
     <div class="button-container">
       <button id="home-menu">Menu</button>
+      <button id="home-play">Speel mee!</button>
     </div>
   </div>
 
@@ -112,7 +114,6 @@
 
     <div class="button-container">
       <button id="menu-back">⬅ Terug</button>
-      <button id="menu-play">Speel mee!</button>
     </div>
   </div>
 
@@ -147,10 +148,7 @@
         screen.classList.remove("active");
       });
 
-      const target = document.getElementById(id);
-      if (target) {
-        target.classList.add("active");
-      }
+      document.getElementById(id).classList.add("active");
     }
 
     function startQR() {
@@ -184,10 +182,10 @@
     // Event listeners
     document.getElementById("start-continue").addEventListener("click", () => showScreen("homeScreen"));
     document.getElementById("home-menu").addEventListener("click", () => showScreen("menuScreen"));
+    document.getElementById("home-play").addEventListener("click", () => showScreen("playScreen"));
     document.getElementById("menu-back").addEventListener("click", () => showScreen("homeScreen"));
-    document.getElementById("menu-play").addEventListener("click", () => showScreen("playScreen"));
     document.getElementById("play-qr").addEventListener("click", startQR);
-    document.getElementById("play-back").addEventListener("click", () => showScreen("menuScreen"));
+    document.getElementById("play-back").addEventListener("click", () => showScreen("homeScreen"));
   </script>
 
 </body>
