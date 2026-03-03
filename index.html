@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoSnap </title>
+  <title>GeoSnap</title>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
     body, html {
@@ -75,16 +77,15 @@
       margin: 20px auto;
     }
   </style>
-
-  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
+
 <body>
 
 <!-- START -->
 <div id="startScreen" class="screen active">
   <img src="logo.png" class="logo">
   <div class="button-container">
-    <button id="btn-start">Continue</button>
+    <button onclick="showScreen('homeScreen')">Continue</button>
   </div>
 </div>
 
@@ -95,8 +96,8 @@
   <p><b>Win en maak kans op een zelfgekozen prijs!</b></p>
 
   <div class="button-container">
-    <button id="btn-menu">Menu</button>
-    <button id="btn-play">Speel mee!</button>
+    <button onclick="showScreen('menuScreen')">Menu</button>
+    <button onclick="showScreen('playScreen')">Speel mee!</button>
   </div>
 </div>
 
@@ -112,7 +113,7 @@
   <div class="menu-item">🍪 Koekjes – 250 punten</div>
 
   <div class="button-container">
-    <button id="btn-menu-back">⬅ Terug</button>
+    <button onclick="showScreen('homeScreen')">⬅ Terug</button>
   </div>
 </div>
 
@@ -127,50 +128,74 @@
   <div class="spacer"></div>
 
   <div class="button-container">
-    <button id="btn-scan">QR code scannen</button>
-    <button id="btn-play-back">⬅ Terug</button>
+    <button onclick="startQR()">QR code scannen</button>
+    <button onclick="showScreen('homeScreen')">⬅ Terug</button>
   </div>
 
   <div id="qr-reader"></div>
 </div>
 
 <script>
-  let qr = null;
+  let qrScanner = null;
+  let scanning = false;
 
   function showScreen(id) {
     stopQR();
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".screen").forEach(screen => {
+      screen.classList.remove("active");
+    });
     document.getElementById(id).classList.add("active");
   }
 
   function startQR() {
-    document.getElementById("qr-reader").innerHTML = "";
-    qr = new Html5Qrcode("qr-reader");
+    if (scanning) return;
 
-    qr.start(
+    scanning = true;
+    document.getElementById("qr-reader").innerHTML = "";
+
+    qrScanner = new Html5Qrcode("qr-reader");
+
+    qrScanner.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: 250 },
-      text => {
-        stopQR();
-        alert("QR gescand:\n" + text);
+      (decodedText) => {
+        handleScan(decodedText);
       }
-    );
+    ).catch(err => {
+      alert("Camera kon niet gestart worden. Gebruik HTTPS of localhost.");
+      console.error(err);
+      scanning = false;
+    });
+  }
+
+  function handleScan(text) {
+    if (!scanning) return;
+
+    scanning = false;
+    stopQR();
+
+    let url = text.trim();
+
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url;
+    }
+
+    setTimeout(() => {
+      window.location.href = url;
+    }, 400);
   }
 
   function stopQR() {
-    if (qr) {
-      qr.stop().catch(() => {});
-      qr = null;
+    if (qrScanner) {
+      qrScanner.stop()
+        .then(() => {
+          qrScanner.clear();
+          qrScanner = null;
+        })
+        .catch(() => {});
     }
+    scanning = false;
   }
-
-  // KNOPPEN
-  document.getElementById("btn-start").onclick = () => showScreen("homeScreen");
-  document.getElementById("btn-menu").onclick = () => showScreen("menuScreen");
-  document.getElementById("btn-play").onclick = () => showScreen("playScreen");
-  document.getElementById("btn-menu-back").onclick = () => showScreen("homeScreen");
-  document.getElementById("btn-scan").onclick = startQR;
-  document.getElementById("btn-play-back").onclick = () => showScreen("homeScreen");
 </script>
 
 </body>
