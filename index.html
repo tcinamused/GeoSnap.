@@ -136,76 +136,65 @@
 </div>
 
 <script>
-  let qrScanner = null;
-  let scanning = false;
+let scanner = null;
 
-  function showScreen(id) {
-    stopQR();
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.classList.remove("active");
-    });
-    document.getElementById(id).classList.add("active");
+function showScreen(id) {
+  stopQR();
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+  document.getElementById(id).classList.add("active");
+}
+
+async function startQR() {
+  const qrContainer = document.getElementById("qr-reader");
+  qrContainer.innerHTML = "";
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("Camera wordt niet ondersteund.");
+    return;
   }
 
-  function startQR() {
-    if (scanning) return;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+    stream.getTracks().forEach(track => track.stop());
+  } catch (err) {
+    alert("Camera permissie geweigerd of geblokkeerd.");
+    return;
+  }
 
-    scanning = true;
-    document.getElementById("qr-reader").innerHTML = "";
+  scanner = new Html5Qrcode("qr-reader");
 
-    qrScanner = new Html5Qrcode("qr-reader");
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText) => {
+      stopQR();
+      let url = decodedText.trim();
 
-    qrScanner.start(
-      { facingMode: { ideal: "environment" } },
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 }
-      },
-      (decodedText) => {
-        handleScan(decodedText);
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        alert("Geen geldige link QR-code.");
+        return;
       }
-    ).catch(err => {
-      alert("Camera kon niet gestart worden. Gebruik HTTPS of localhost.");
-      console.error(err);
-      scanning = false;
-    });
-  }
 
-  function handleScan(text) {
-    if (!scanning) return;
-
-    scanning = false;
-
-    // Scan geluid
-    const beep = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-    beep.play();
-
-    stopQR();
-
-    let url = text.trim();
-
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-      alert("Dit is geen geldige link QR-code.");
-      return;
-    }
-
-    // Direct naar QR site
-    setTimeout(() => {
       window.location.href = url;
-    }, 500);
-  }
-
-  function stopQR() {
-    if (qrScanner) {
-      qrScanner.stop()
-        .then(() => {
-          qrScanner.clear();
-          qrScanner = null;
-        })
-        .catch(() => {});
     }
-    scanning = false;
+  ).catch(err => {
+    alert("Camera kon niet gestart worden.");
+    console.error(err);
+  });
+}
+
+function stopQR() {
+  if (scanner) {
+    scanner.stop().then(() => {
+      scanner.clear();
+      scanner = null;
+    }).catch(() => {});
   }
+}
 </script>
 
 </body>
